@@ -56,10 +56,23 @@ func (u *UserController) Delete() {
 func (u *UserController) Login() {
 	username := u.GetString("username")
 	password := u.GetString("password")
-	if models.Login(username, password) {
-		u.Data["json"] = "login success"
+	res,err := models.Login(username, password) 
+	if res == true {
+		u.Data["json"] =  map[string]string {"result":"1", "message":err.Error()}
 	} else {
-		u.Data["json"] = "user not exist"
+		u.Data["json"] = map[string]string {"result":"0","message":err.Error()}
+	}
+	u.ServeJSON()
+}
+
+func (u *UserController) Register() {
+	var user models.User
+	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+	res, err := models.Register(user)
+	if res == true {
+		u.Data["json"] = map[string]string {"result":"1", "message":err.Error()}
+	} else {
+		u.Data["json"] = map[string]string {"result":"0","message":err.Error()}
 	}
 	u.ServeJSON()
 }

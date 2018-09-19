@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"regexp"
 )
 
 type User struct {
@@ -51,7 +52,45 @@ func DeleteUser(uid int64) {
 	o.Delete(&user)
 }
 
-func Login(username, password string) bool {
-	return false
+func GetUserByName(username string) (res bool, u *User) {
+	o := orm.NewOrm()
+	var user User
+	user.Username=username
+	err := o.Read(&user, "Username")
+	if err == orm.ErrNoRows {
+		return false, nil
+	}
+	return true, &user
+}
+
+func Login(username, password string) (res bool, e error) {
+	o := orm.NewOrm()
+	var user User
+	user.Username=username
+	err := o.Read(&user, "Username")
+
+	if err == orm.ErrNoRows {
+		return false,errors.New("username not correct.")
+	}
+	if user.Password != password {
+		return false,errors.New("username or password not correct.")
+	}
+	return true, errors.New("login seccuss.") 
+}
+
+func Register(u User) (res bool, e error) {
+	r, _ := regexp.Compile("[0-9]{11}")
+	if !r.MatchString(u.Username) {
+		return false, errors.New("you shoud input phone num")
+	}
+	if u.Password == "" {
+		return false, errors.New("password can not be empty.")
+	}
+	res,_ = GetUserByName(u.Username)
+	if res {
+		return false, errors.New("user alreay exists.")
+	}
+	AddUser(u);
+	return true, errors.New("register seccess.")
 }
 
