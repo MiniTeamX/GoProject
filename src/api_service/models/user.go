@@ -2,85 +2,56 @@ package models
 
 import (
 	"errors"
-	"strconv"
-	"time"
+	"github.com/astaxie/beego/orm"
+	_ "github.com/go-sql-driver/mysql"
 )
-
-var (
-	UserList map[string]*User
-)
-
-func init() {
-	UserList = make(map[string]*User)
-	u := User{"user_11111", "astaxie", "11111", Profile{"male", 20, "Singapore", "astaxie@gmail.com"}}
-	UserList["user_11111"] = &u
-}
 
 type User struct {
-	Id       string
-	Username string
-	Password string
-	Profile  Profile
+    UserId          int64  `orm:"column(user_id);pk"`	
+	Username        string
+	Password        string
+	NickName        string
+	Gender          int64
+	PhotoUrl        string
+	Introduction    string
 }
 
-type Profile struct {
-	Gender  string
-	Age     int
-	Address string
-	Email   string
+func init() {
+	orm.RegisterModel(new(User))
+	orm.RegisterDriver("mysql", orm.DRMySQL)
+	orm.RegisterDataBase("default", "mysql", "root:xcvvcx@/my_db?charset=utf8")
 }
 
-func AddUser(u User) string {
-	u.Id = "user_" + strconv.FormatInt(time.Now().UnixNano(), 10)
-	UserList[u.Id] = &u
-	return u.Id
+func AddUser(u User) int64 {
+	o := orm.NewOrm() 
+	id, _ := o.Insert(&u)
+	return id 
 }
 
-func GetUser(uid string) (u *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		return u, nil
+func GetUser(uid int64) (u *User, err error) {
+	o := orm.NewOrm()
+	u = &User{UserId: uid}
+	err = o.Read(u)
+	return u, err 
+}
+
+func UpdateUser(uid int64, u *User) (err error, uu *User) {
+	o := orm.NewOrm()
+	user := User{UserId: uid}
+	if o.Read(&user) == nil {
+		_, err := o.Update(u) 
+		return  err,u 
 	}
-	return nil, errors.New("User not exists")
+	return errors.New("id not exits."),u
 }
 
-func GetAllUsers() map[string]*User {
-	return UserList
-}
-
-func UpdateUser(uid string, uu *User) (a *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		if uu.Username != "" {
-			u.Username = uu.Username
-		}
-		if uu.Password != "" {
-			u.Password = uu.Password
-		}
-		if uu.Profile.Age != 0 {
-			u.Profile.Age = uu.Profile.Age
-		}
-		if uu.Profile.Address != "" {
-			u.Profile.Address = uu.Profile.Address
-		}
-		if uu.Profile.Gender != "" {
-			u.Profile.Gender = uu.Profile.Gender
-		}
-		if uu.Profile.Email != "" {
-			u.Profile.Email = uu.Profile.Email
-		}
-		return u, nil
-	}
-	return nil, errors.New("User Not Exist")
+func DeleteUser(uid int64) {
+	o := orm.NewOrm()
+	user := User{UserId: uid}
+	o.Delete(&user)
 }
 
 func Login(username, password string) bool {
-	for _, u := range UserList {
-		if u.Username == username && u.Password == password {
-			return true
-		}
-	}
 	return false
 }
 
-func DeleteUser(uid string) {
-	delete(UserList, uid)
-}
