@@ -4,7 +4,6 @@ import (
 	"api_service/models"
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"strconv"
 )
 
 type UserController struct {
@@ -58,7 +57,7 @@ func (u *UserController) Login() {
 	username := u.GetString("username")
 	password := u.GetString("password")
 	uid,err := models.Login(username, password) 
-    u.Data["json"] =  map[string]string {"uid":strconv.FormatInt(uid, 10), "message":err.Error()}
+    u.Data["json"] =  map[string]interface{}{"uid":uid, "message":err.Error()}
 	u.ServeJSON()
 }
 
@@ -67,9 +66,9 @@ func (u *UserController) Register() {
 	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
 	res, err := models.Register(user)
 	if res == true {
-		u.Data["json"] = map[string]string {"result":"1", "message":err.Error()}
+		u.Data["json"] = map[string]interface{} {"result":1, "message":err.Error()}
 	} else {
-		u.Data["json"] = map[string]string {"result":"0","message":err.Error()}
+		u.Data["json"] = map[string]interface{} {"result":0,"message":err.Error()}
 	}
 	u.ServeJSON()
 }
