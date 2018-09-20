@@ -78,22 +78,22 @@ func Login(username, password string) (id int64, e error) {
 	if user.Password != password {
 		return -1,errors.New("username or password not correct.")
 	}
-	return user.UserId, errors.New("login seccuss.") 
+	return user.UserId, errors.New("login success.") 
 }
 
 func Register(u User) (res bool, e error) {
 	r, _ := regexp.Compile("[0-9]{11}")
 	if !r.MatchString(u.Username) {
-		return false, errors.New("you shoud input phone num")
+		return false, errors.New("you should input phonenum")
 	}
 	if u.Password == "" {
 		return false, errors.New("password can not be empty.")
 	}
 	res,_ = GetUserByName(u.Username)
 	if res {
-		return false, errors.New("user alreay exists.")
+		return false, errors.New("user already exists.")
 	}
 	AddUser(u);
-	return true, errors.New("register seccess.")
+	return true, errors.New("register success.")
 }
 
