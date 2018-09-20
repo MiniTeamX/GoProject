@@ -63,19 +63,22 @@ func GetUserByName(username string) (res bool, u *User) {
 	return true, &user
 }
 
-func Login(username, password string) (res bool, e error) {
+func Login(username, password string) (id int64, e error) {
 	o := orm.NewOrm()
+	if username == "" || password == "" {
+		return -1, errors.New("username or password can not be empty.")
+	}
 	var user User
 	user.Username=username
 	err := o.Read(&user, "Username")
 
 	if err == orm.ErrNoRows {
-		return false,errors.New("username not correct.")
+		return -1,errors.New("username not correct.")
 	}
 	if user.Password != password {
-		return false,errors.New("username or password not correct.")
+		return -1,errors.New("username or password not correct.")
 	}
-	return true, errors.New("login seccuss.") 
+	return user.UserId, errors.New("login seccuss.") 
 }
 
 func Register(u User) (res bool, e error) {
