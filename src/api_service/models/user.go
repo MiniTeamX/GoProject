@@ -5,16 +5,19 @@ import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"regexp"
+	"time"
 )
 
 type User struct {
     UserId          int64  `orm:"column(user_id);pk"`	
 	Username        string
 	Password        string
+	PayPassword     string
 	NickName        string
 	Gender          int64
 	PhotoUrl        string
 	Introduction    string
+	CreateTime      time.Time
 }
 
 func init() {
@@ -97,3 +100,7 @@ func Register(u User) (res bool, e error) {
 	return true, errors.New("register success.")
 }
 
+func AddUserLikeCount(uid string) {
+	o := orm.NewOrm()
+	o.Raw("UPDATE user SET phrase_num = phrase_num + 1 WHERE user_id = " + uid).Exec()
+}
