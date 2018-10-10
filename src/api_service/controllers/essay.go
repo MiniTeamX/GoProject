@@ -119,3 +119,11 @@ func (e *EssayController) EssayLike() {
 	essay,_:= models.GetEssay(id)
 	models.AddUserLikeCount(strconv.FormatInt(essay.UserId, 10))
 }
+
+func (e *EssayController) EssayCollect() {
+	var c models.Collect
+	json.Unmarshal(e.Ctx.Input.RequestBody, &c)
+	cid := models.AddCollect(c)
+	e.Data["json"] = map[string]int64{"cid": cid}
+	e.ServeJSON()
+}

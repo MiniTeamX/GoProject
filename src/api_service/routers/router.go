@@ -15,4 +15,5 @@ func init() {
 	beego.Router("/essay/recommand_tab", &controllers.EssayController{}, "get:GetRecommandEssays")
 	beego.Router("/essay/hot_tab", &controllers.EssayController{}, "get:GetHotEssays")
 	beego.Router("/essay/article_like_click", &controllers.EssayController{}, "get:EssayLike")
+	beego.Router("/essay/article_collect_click", &controllers.EssayController{}, "post:EssayCollect")
 }
