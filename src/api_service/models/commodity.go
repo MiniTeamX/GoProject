@@ -8,11 +8,11 @@ import (
 
 type Commodity struct {
 	CommodityId     int64 `orm:"column(Commodity_id);pk"`
-	name            string
-	description     string
-	picture_url     string
-	pricce          int64
-	left_count      int64
+	Name            string
+	Description     string
+	PictureUrl     string
+	Price          int64
+	LeftCount      int64
 }
 
 func init() {

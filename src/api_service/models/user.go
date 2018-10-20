@@ -17,6 +17,9 @@ type User struct {
 	Gender          int64
 	PhotoUrl        string
 	Introduction    string
+    PhraseNum       int64
+    XwtBalance      int64
+    XwtPowerValue   int64
 	CreateTime      time.Time
 }
 

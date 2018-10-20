@@ -1,0 +1,667 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "basePath": "/v1",
+    "paths": {
+        "/commodity/commodity_verify": {
+            "get": {
+                "tags": [
+                    "commodity"
+                ],
+                "description": "验证用户余额和支付密码是否ok",
+                "operationId": "CommodityController.信息验证",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "UserId",
+                        "description": "The user id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "CommodityId",
+                        "description": "The commodity id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "PayPassword",
+                        "description": "The pay password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{ \"result\":1 , \"message\":\"验证成功\" }"
+                    },
+                    "403": {
+                        "description": "{ \"result\":0, \"message\": \"验证失败原因\"}"
+                    }
+                }
+            }
+        },
+        "/commodity/{cid}": {
+            "get": {
+                "tags": [
+                    "commodity"
+                ],
+                "description": "get commodity by commodity id",
+                "operationId": "CommodityController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "cid",
+                        "description": "The key for commodity id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Commodity"
+                        }
+                    },
+                    "403": {
+                        "description": "{string} error message"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "commodity"
+                ],
+                "description": "delete the commodity",
+                "operationId": "CommodityController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "cid",
+                        "description": "The eid you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    }
+                }
+            }
+        },
+        "/essay/article_collect_click": {
+            "post": {
+                "tags": [
+                    "essay"
+                ],
+                "description": "user collect the essay",
+                "operationId": "EssayController.EssayCollect",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "UserId",
+                        "description": "The user id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.String"
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "EssayId",
+                        "description": "The essay id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.body"
+                        }
+                    }
+                ]
+            }
+        },
+        "/essay/article_information": {
+            "get": {
+                "tags": [
+                    "essay"
+                ],
+                "description": "essay information",
+                "operationId": "EssayController.Essay information",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "EssayId",
+                        "description": "The essay id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/.EssayInformation"
+                        }
+                    }
+                }
+            }
+        },
+        "/essay/article_like_click": {
+            "get": {
+                "tags": [
+                    "essay"
+                ],
+                "description": "user like the essay",
+                "operationId": "EssayController.EssayLike",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "UserId",
+                        "description": "The user id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "EsssayId",
+                        "description": "The essay id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/essay/hot_tab": {
+            "get": {
+                "tags": [
+                    "essay"
+                ],
+                "description": "GetHot Essays",
+                "operationId": "EssayController.GetHotEssays",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HotContent"
+                        }
+                    },
+                    "403": {
+                        "description": "{string} \"num == 0\""
+                    }
+                }
+            }
+        },
+        "/essay/recommand_tab": {
+            "get": {
+                "tags": [
+                    "essay"
+                ],
+                "description": "GetRecommand Essays",
+                "operationId": "EssayController.GetRecommandEssays",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RecommandContent"
+                        }
+                    },
+                    "403": {
+                        "description": "{string} \"num == 0\""
+                    }
+                }
+            }
+        },
+        "/essay/{eid}": {
+            "get": {
+                "tags": [
+                    "essay"
+                ],
+                "description": "get essay by essay id",
+                "operationId": "EssayController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "eid",
+                        "description": "The key for essayid",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Essay"
+                        }
+                    },
+                    "403": {
+                        "description": "{string} error message"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "essay"
+                ],
+                "description": "delete the essay",
+                "operationId": "EssayController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The eid you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    }
+                }
+            }
+        },
+        "/user/collect_articles": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "展示用户收藏文章集合",
+                "operationId": "UserController.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "UserId",
+                        "description": "user id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Commodity"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "Logs user into the systems",
+                "operationId": "UserController.Login",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "username",
+                        "description": "The username for login",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "password",
+                        "description": "The password for login",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{ \"uid\":uid , \"message\":\"login success\" }"
+                    },
+                    "403": {
+                        "description": "{ \"uid\":-1, \"message\": \"fail message\"}"
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "Register new user",
+                "operationId": "UserController.Register",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{ \"result\":1 , \"message\":\"register success\" }"
+                    },
+                    "403": {
+                        "description": "{ \"result\":0, \"message\": \"fail message\"}"
+                    }
+                }
+            }
+        },
+        "/user/upload": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "upload avatar photo",
+                "operationId": "UserController.Upload Avatar",
+                "parameters": [
+                    {
+                        "in": "form",
+                        "name": "avatar_name",
+                        "description": "multipart/form-data; filename:avatar_name",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.form"
+                        }
+                    },
+                    {
+                        "in": "form",
+                        "name": "uid",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.form"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{ \"result\":1 , \"message\":\"avatar url\" }"
+                    },
+                    "403": {
+                        "description": "{ \"result\":0, \"message\": \"upload failed\"}"
+                    }
+                }
+            }
+        },
+        "/user/{uid}": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "get user by uid",
+                "operationId": "UserController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "403": {
+                        "description": ":uid is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "description": "update the user",
+                "operationId": "UserController.Update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "403": {
+                        "description": ":uid is not int"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "description": "delete the user",
+                "operationId": "UserController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        ".EssayInformation": {
+            "type": "object"
+        },
+        ".String": {
+            "type": "object"
+        },
+        ".body": {
+            "type": "object"
+        },
+        ".form": {
+            "type": "object"
+        },
+        "controllers.HotContent": {
+            "title": "HotContent",
+            "type": "object",
+            "properties": {
+                "ArticleDescription": {
+                    "type": "string"
+                },
+                "ArticleId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ArticleTitle": {
+                    "type": "string"
+                },
+                "ArticleWxtReward": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "PictureUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.RecommandContent": {
+            "title": "RecommandContent",
+            "type": "object",
+            "properties": {
+                "ArticleDescription": {
+                    "type": "string"
+                },
+                "ArticleId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ArticleTitle": {
+                    "type": "string"
+                },
+                "AuthorNickname": {
+                    "type": "string"
+                },
+                "AuthorPic": {
+                    "type": "string"
+                },
+                "UserId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.Commodity": {
+            "title": "Commodity",
+            "type": "object",
+            "properties": {
+                "CommodityId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Description": {
+                    "type": "string"
+                },
+                "LeftCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "PictureUrl": {
+                    "type": "string"
+                },
+                "Price": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.Essay": {
+            "title": "Essay",
+            "type": "object",
+            "properties": {
+                "CommentNum": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Content": {
+                    "type": "string"
+                },
+                "CreateTime": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "EssayId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "EssayUrl": {
+                    "type": "string"
+                },
+                "PhraseNum": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "PictureUrl": {
+                    "type": "string"
+                },
+                "RecommandNum": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Title": {
+                    "type": "string"
+                },
+                "Type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UserId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "WxtReward": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.User": {
+            "title": "User",
+            "type": "object",
+            "properties": {
+                "CreateTime": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Gender": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Introduction": {
+                    "type": "string"
+                },
+                "NickName": {
+                    "type": "string"
+                },
+                "Password": {
+                    "type": "string"
+                },
+                "PayPassword": {
+                    "type": "string"
+                },
+                "PhotoUrl": {
+                    "type": "string"
+                },
+                "PhraseNum": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UserId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Username": {
+                    "type": "string"
+                },
+                "XwtBalance": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "XwtPowerValue": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        }
+    }
+}

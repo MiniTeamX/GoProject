@@ -16,8 +16,9 @@ type Essay struct {
 	Title          string
 	Content        string
 	PhraseNum      int64
+	PictureUrl      string
 	CommentNum     int64
-	Recommand      int64
+	RecommandNum   int64
 	WxtReward      int64
 	CreateTime     time.Time
 }
@@ -73,4 +74,3 @@ func AddEssayLikeCount(eid string) {
 	o := orm.NewOrm()
 	o.Raw("UPDATE essay SET phrase_num = phrase_num + 1 WHERE essay_id = " + eid).Exec()
 }
-

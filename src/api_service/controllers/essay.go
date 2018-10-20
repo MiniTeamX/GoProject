@@ -10,6 +10,7 @@ import (
 type RecommandContent struct 
 {
 	UserId     int64
+	ArticleId  int64
 	AuthorPic  string
 	AuthorNickname string
 	ArticleTitle string
@@ -18,12 +19,18 @@ type RecommandContent struct
 
 type HotContent struct
 {
+	ArticleId        int64
 	ArticleTitle     string
+	PictureUrl       string
 	ArticleDescription    string
 	ArticleWxtReward  int64
 }
 
-
+type EssayInformation struct
+{
+	models.Essay
+	Comments []models.Comment
+}
 
 type EssayController struct {
 	beego.Controller
@@ -34,19 +41,6 @@ func (e *EssayController) Post() {
 	json.Unmarshal(e.Ctx.Input.RequestBody, &essay)
 	eid := models.AddEssay(essay)
 	e.Data["json"] = map[string]int64{"eid": eid}
-	e.ServeJSON()
-}
-
-func (e *EssayController) Get() {
-	eid,err := e.GetInt(":eid")
-	if  err == nil {
-		essay, err := models.GetEssay(int64(eid))
-		if err != nil {
-			e.Data["json"] = err.Error()
-		} else {
-			e.Data["json"] = essay 
-		}
-	}
 	e.ServeJSON()
 }
 
@@ -65,6 +59,30 @@ func (e *EssayController) Put() {
 	e.ServeJSON()
 }
 
+// @Title Get
+// @Description get essay by essay id
+// @Param	eid		path 	string	true		"The key for essayid"
+// @Success 200 {object} models.Essay
+// @Failure 403 {string} error message
+// @router /:eid [get]
+func (e *EssayController) Get() {
+	eid,err := e.GetInt(":eid")
+	if  err == nil {
+		essay, err := models.GetEssay(int64(eid))
+		if err != nil {
+			e.Data["json"] = err.Error()
+		} else {
+			e.Data["json"] = essay 
+		}
+	}
+	e.ServeJSON()
+}
+
+// @Title Delete
+// @Description delete the essay
+// @Param	uid		path 	string	true		"The eid you want to delete"
+// @Success 200 {string} delete success!
+// @router /:eid [delete]
 func (e *EssayController) Delete() {
 	eid,_:= e.GetInt(":eid")
 	models.DeleteEssay(int64(eid))
@@ -72,6 +90,11 @@ func (e *EssayController) Delete() {
 	e.ServeJSON()
 }
 
+// @Title GetRecommandEssays
+// @Description GetRecommand Essays
+// @Success 200 {object} controllers.RecommandContent
+// @Failure 403 {string} "num == 0"
+// @router /recommand_tab [Get]
 func (e *EssayController) GetRecommandEssays() {
 	var recommand []RecommandContent
 	essays, num := models.GetRecommandEssays(3)
@@ -85,6 +108,7 @@ func (e *EssayController) GetRecommandEssays() {
 		r.UserId = user.UserId
 		r.AuthorPic = user.PhotoUrl
 		r.AuthorNickname = user.NickName
+		r.ArticleId = v.EssayId
 		r.ArticleTitle = v.Title
 		r.ArticleDescription = v.Content
 		recommand = append(recommand, r)
@@ -93,8 +117,13 @@ func (e *EssayController) GetRecommandEssays() {
 	e.ServeJSON()
 }
 
+// @Title GetHotEssays
+// @Description GetHot Essays
+// @Success 200 {object} controllers.HotContent
+// @Failure 403 {string} "num == 0"
+// @router /hot_tab [Get]
 func (e *EssayController) GetHotEssays() {
-	var hot []HotContent
+	hot := make([]HotContent, 0, 0)
 	essays, num := models.GetHotEssays()
 	if num == 0 {
 		e.Data["json"] = "num == 0"
@@ -102,8 +131,10 @@ func (e *EssayController) GetHotEssays() {
 	} 
 	var h HotContent
 	for _, v := range essays {
+		h.ArticleId = v.EssayId
 		h.ArticleTitle = v.Title
 		h.ArticleDescription = v.Content
+		h.PictureUrl = v.PictureUrl
 		h.ArticleWxtReward = v.WxtReward
 		hot = append(hot, h)
 	}
@@ -111,19 +142,71 @@ func (e *EssayController) GetHotEssays() {
 	e.ServeJSON()
 }
 
+// @Title EssayLike
+// @Description user like the essay
+// @Param	UserId	  query 	string	true		"The user id"
+// @Param	EsssayId	  query 	string	true		"The essay id"
+// @router /article_like_click [get]
 func (e *EssayController) EssayLike() {
-//	userid := e.GetString("user_id")
-	essayid:= e.GetString("article_id")
+//	userid := e.GetString("UserId")
+	essayid:= e.GetString("EssayId")
 	models.AddEssayLikeCount(essayid)
 	id,_ := strconv.ParseInt(essayid, 10, 64)
 	essay,_:= models.GetEssay(id)
 	models.AddUserLikeCount(strconv.FormatInt(essay.UserId, 10))
 }
 
+// @Title EssayCollect
+// @Description user collect the essay
+// @Param	UserId	 body  String 	true		"The user id"
+// @Param	EssayId	 body  body	   true		"The essay id"
+// @router /article_collect_click [post]
 func (e *EssayController) EssayCollect() {
 	var c models.Collect
 	json.Unmarshal(e.Ctx.Input.RequestBody, &c)
-	cid := models.AddCollect(c)
-	e.Data["json"] = map[string]int64{"cid": cid}
+	models.AddCollect(c)
+	e.Data["json"] = "Add success"
 	e.ServeJSON()
 }
+
+
+// @Title Essay information
+// @Description essay information
+// @Param	EssayId	 query  string   true		"The essay id"
+// @Success 200 {object} Controllers.EssayInformation
+// @router /article_information [Get]
+func (e *EssayController) EssayInformation() {
+	var essay_information  EssayInformation
+	comments := make([]models.Comment, 0 , 0)
+	eid := e.GetString("EssayId")
+	eid_int,_ := strconv.ParseInt(eid, 10, 64)
+	essay,_ := models.GetEssay(eid_int)
+
+	essay_information.Essay = *essay
+	comments = models.GetCommentsByEssayId(eid)
+	essay_information.Comments = comments
+	e.Data["json"] = essay_information
+	e.ServeJSON()
+}
+
+// @Title Upload picture
+// @Description upload essay photo
+// @Param	 picture_name  form	 form  true	"multipart/form-data; filename:picture_name"
+// @Success 200 { "result":1 , "message":"avatar url" }
+// @Failure 403 { "result":0, "message": "upload failed"}
+// @router /upload [post]
+func (u *UserController) UploadPicture() {
+	f, h, err := u.GetFile("picture_name")
+	if err != nil {
+		u.Data["json"] = map[string] interface{} {"result":0, "message":"upload failed"}
+	}
+	defer f.Close()
+//	suffix := strings.Split(h.Filename, ".")[1]
+//	filename := uid + "." + suffix;
+	picture_url := "http://192.168.26.193" + "/static/avatar/" + h.Filename;
+	u.SaveToFile("picture_name", "static/avatar/" + h.Filename)
+	u.Data["json"] = map[string] interface{} {"result":1, "message":picture_url}
+	u.ServeJSON()
+}
+
+

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"strconv"
 )
 
 type Collect struct {
@@ -43,4 +44,10 @@ func DeleteCollect(uid, eid int64) {
 	o := orm.NewOrm()
 	collect := Collect{UserId: uid, EssayId: eid}
 	o.Delete(&collect)
+}
+
+func GetCollectByUserId(uid int64) (err error,cc []Collect) {
+	o := orm.NewOrm()
+	_, err = o.Raw("SELECT * FROM collect WHERE user_id = " + strconv.FormatInt(uid, 10)).QueryRows(&cc)
+	return
 }
