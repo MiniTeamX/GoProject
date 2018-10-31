@@ -26,7 +26,7 @@ type User struct {
 func init() {
 	orm.RegisterModel(new(User))
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default", "mysql", "root:xcvvcx@/my_db?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "root:root@/my_db?charset=utf8")
 }
 
 func AddUser(u User) int64 {

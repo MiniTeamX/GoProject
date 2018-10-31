@@ -16,9 +16,14 @@ type UserController struct {
 type CollectArticle struct {
 	UserAvatar      string
 	UserNickName    string
+	EssayId         int64
 	EssayTitle      string
+	EssayReadNum     int64
+	EssayPhraseNum   int64
+	EssayCommentNum  int64
+	EssayWatchNum    int64
 	EssayXwtReward  int64
-	EssayPrictureUrl string
+	EssayPictureUrl string
 }
 
 func (u *UserController) Post() {
@@ -152,12 +157,16 @@ func (u *UserController) CollectEssays() {
 	cc := make([]CollectArticle, 0, 0)
 	var c CollectArticle
 	for _,v := range collects {
-		user,_ := models.GetUser(v.UserId)
 		essay,_ := models.GetEssay(v.EssayId)
+		user,_ := models.GetUser(essay.UserId)
 		c.UserNickName = user.NickName
 		c.UserAvatar = user.PhotoUrl
+		c.EssayId = essay.EssayId
+		c.EssayPhraseNum = essay.PhraseNum
+		c.EssayCommentNum = essay.CommentNum
+		c.EssayWatchNum = essay.WatchNum
 		c.EssayTitle = essay.Title
-		c.EssayPrictureUrl = essay.PictureUrl
+		c.EssayPictureUrl = essay.PictureUrl
 		c.EssayXwtReward = essay.WxtReward
 		cc = append(cc, c)
 	}

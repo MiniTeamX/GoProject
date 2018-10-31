@@ -3,8 +3,10 @@ package controllers
 import (
 	"api_service/models"
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"strconv"
+	"time"
 )
 
 type RecommandContent struct 
@@ -36,9 +38,17 @@ type EssayController struct {
 	beego.Controller
 }
 
+// @Title upload essay
+// @Description post essay
+// @Param	body	body 	models.Essay	true	"essay"
+// @Success 200 { "eid":eid  }
+// @router /upload_article [post]
 func (e *EssayController) Post() {
 	var essay models.Essay
 	json.Unmarshal(e.Ctx.Input.RequestBody, &essay)
+	time := time.Now()
+	essay.CreateTime = time
+
 	eid := models.AddEssay(essay)
 	e.Data["json"] = map[string]int64{"eid": eid}
 	e.ServeJSON()
@@ -97,7 +107,7 @@ func (e *EssayController) Delete() {
 // @router /recommand_tab [Get]
 func (e *EssayController) GetRecommandEssays() {
 	var recommand []RecommandContent
-	essays, num := models.GetRecommandEssays(3)
+	essays, num := models.GetRecommandEssays(12)
 	if num == 0 {
 		e.Data["json"] = "num == 0"
 		return
@@ -144,28 +154,66 @@ func (e *EssayController) GetHotEssays() {
 
 // @Title EssayLike
 // @Description user like the essay
-// @Param	UserId	  query 	string	true		"The user id"
-// @Param	EsssayId	  query 	string	true		"The essay id"
+// @Param	UserId	  query 	int	true		"The user id"
+// @Param	EssayId	  query 	int	true		"The essay id"
 // @router /article_like_click [get]
 func (e *EssayController) EssayLike() {
-//	userid := e.GetString("UserId")
-	essayid:= e.GetString("EssayId")
-	models.AddEssayLikeCount(essayid)
-	id,_ := strconv.ParseInt(essayid, 10, 64)
-	essay,_:= models.GetEssay(id)
+	userid, _:= e.GetInt("UserId")
+	essayid, _:= e.GetInt("EssayId")
+	t := time.Now()
+	essay_like := models.LikeEssay{UserId:int64(userid), EssayId:int64(essayid), Time: t}
+	models.AddEssayLike(essay_like)
+
+	models.AddEssayLikeCount(strconv.Itoa(essayid))
+	essay,_:= models.GetEssay(int64(essayid))
 	models.AddUserLikeCount(strconv.FormatInt(essay.UserId, 10))
 }
 
+
+// @Title CommentLike
+// @Description user like the  comment
+// @Param	UserId	  query 	int	true		"The user id"
+// @Param	CommentId	  query 	int	true		"The essay id"
+// @router /comment_like_click [get]
+func (e *EssayController) CommentLike() {
+	userid, _:= e.GetInt("UserId")
+	commentid, _:= e.GetInt("CommentId")
+	t := time.Now()
+	comment_like := models.LikeCommnet{UserId:int64(userid), CommentId:int64(commentid), Time: t}
+	models.AddCommentLike(comment_like)
+
+	c,_ := models.GetComment(int64(commentid))
+	c.PhraseNum += 1
+	models.UpdateComment(c.CommentId, c)
+	from_id := c.FromId
+	models.AddUserLikeCount(strconv.FormatInt(from_id, 10))
+}
+
+
+
 // @Title EssayCollect
 // @Description user collect the essay
-// @Param	UserId	 body  String 	true		"The user id"
-// @Param	EssayId	 body  body	   true		"The essay id"
+// @Param	UserId	 body  int  	true		"The user id"
+// @Param	EssayId	 body  int	   true		"The essay id"
 // @router /article_collect_click [post]
 func (e *EssayController) EssayCollect() {
 	var c models.Collect
 	json.Unmarshal(e.Ctx.Input.RequestBody, &c)
 	models.AddCollect(c)
 	e.Data["json"] = "Add success"
+	e.ServeJSON()
+}
+
+// @Title Essay comment
+// @Description 评论功能
+// @Param	body	 body   models.Comment   true		"The essay id"
+// @router /article_comment_click [post]
+func (e *EssayController) EssayComment() {
+	var c models.Comment
+	json.Unmarshal(e.Ctx.Input.RequestBody, &c)
+	fmt.Print(c)
+	models.AddComment(c)
+	e.Data["json"] = "comment Add success"
 	e.ServeJSON()
 }
 
@@ -194,8 +242,8 @@ func (e *EssayController) EssayInformation() {
 // @Param	 picture_name  form	 form  true	"multipart/form-data; filename:picture_name"
 // @Success 200 { "result":1 , "message":"avatar url" }
 // @Failure 403 { "result":0, "message": "upload failed"}
-// @router /upload [post]
-func (u *UserController) UploadPicture() {
+// @router /upload_picture [post]
+func (u *EssayController) UploadPicture() {
 	f, h, err := u.GetFile("picture_name")
 	if err != nil {
 		u.Data["json"] = map[string] interface{} {"result":0, "message":"upload failed"}

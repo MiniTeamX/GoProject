@@ -57,6 +57,14 @@ func init() {
 
 	beego.GlobalControllerRouter["api_service/controllers:EssayController"] = append(beego.GlobalControllerRouter["api_service/controllers:EssayController"],
 		beego.ControllerComments{
+			Method: "EssayComment",
+			Router: `/article_comment_click`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["api_service/controllers:EssayController"] = append(beego.GlobalControllerRouter["api_service/controllers:EssayController"],
+		beego.ControllerComments{
 			Method: "EssayInformation",
 			Router: `/article_information`,
 			AllowHTTPMethods: []string{"Get"},
@@ -67,6 +75,14 @@ func init() {
 		beego.ControllerComments{
 			Method: "EssayLike",
 			Router: `/article_like_click`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["api_service/controllers:EssayController"] = append(beego.GlobalControllerRouter["api_service/controllers:EssayController"],
+		beego.ControllerComments{
+			Method: "CommentLike",
+			Router: `/comment_like_click`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -84,6 +100,22 @@ func init() {
 			Method: "GetRecommandEssays",
 			Router: `/recommand_tab`,
 			AllowHTTPMethods: []string{"Get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["api_service/controllers:EssayController"] = append(beego.GlobalControllerRouter["api_service/controllers:EssayController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/upload_article`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["api_service/controllers:EssayController"] = append(beego.GlobalControllerRouter["api_service/controllers:EssayController"],
+		beego.ControllerComments{
+			Method: "UploadPicture",
+			Router: `/upload_picture`,
+			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
 
@@ -137,16 +169,32 @@ func init() {
 
 	beego.GlobalControllerRouter["api_service/controllers:UserController"] = append(beego.GlobalControllerRouter["api_service/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "UploadPicture",
+			Method: "UploadAvatar",
 			Router: `/upload`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["api_service/controllers:UserController"] = append(beego.GlobalControllerRouter["api_service/controllers:UserController"],
+	beego.GlobalControllerRouter["api_service/controllers:XwtRequestController"] = append(beego.GlobalControllerRouter["api_service/controllers:XwtRequestController"],
 		beego.ControllerComments{
-			Method: "UploadAvatar",
-			Router: `/upload`,
+			Method: "DealRequestCallback",
+			Router: `/deal_request`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["api_service/controllers:XwtRequestController"] = append(beego.GlobalControllerRouter["api_service/controllers:XwtRequestController"],
+		beego.ControllerComments{
+			Method: "GetAllRequest",
+			Router: `/get_all_request`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["api_service/controllers:XwtRequestController"] = append(beego.GlobalControllerRouter["api_service/controllers:XwtRequestController"],
+		beego.ControllerComments{
+			Method: "PostRequest",
+			Router: `/post_request`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})

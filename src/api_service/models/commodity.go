@@ -18,7 +18,7 @@ type Commodity struct {
 func init() {
 	orm.RegisterModel(new(Commodity))
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default", "mysql", "root:xcvvcx@/my_db?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "root:root@/my_db?charset=utf8")
 }
 
 func AddCommodity(c Commodity) int64 {

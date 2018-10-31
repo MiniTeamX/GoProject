@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
@@ -19,7 +20,7 @@ type Comment struct {
 func init() {
 	orm.RegisterModel(new(Comment))
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default", "mysql", "root:xcvvcx@/my_db?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "root:root@/my_db?charset=utf8")
 }
 
 func AddComment(c Comment) int64 {
@@ -28,6 +29,15 @@ func AddComment(c Comment) int64 {
 	return id
 }
 
+func UpdateComment(cid int64, c *Comment) (err error, ee *Comment) {
+	o := orm.NewOrm()
+	comment := Comment{CommentId: cid}
+	if o.Read(&comment) == nil {
+		_, err := o.Update(c)
+		return  err,c
+	}
+	return errors.New("id not exits."),c
+}
 func GetComment(cid int64) (c *Comment, err error) {
 	o := orm.NewOrm()
 	c = &Comment{CommentId: cid}

@@ -16,17 +16,26 @@ type Essay struct {
 	Title          string
 	Content        string
 	PhraseNum      int64
-	PictureUrl      string
+	PictureUrl     string
+	EssayCount     int64
 	CommentNum     int64
+	WatchNum       int64
 	RecommandNum   int64
 	WxtReward      int64
 	CreateTime     time.Time
 }
 
+type EssaySnapshot struct {
+	EssayId      int64
+	UserId       int64
+	EssayCount   int64
+	Type         int64
+}
+
 func init() {
 	orm.RegisterModel(new(Essay))
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default", "mysql", "root:xcvvcx@/my_db?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "root:root@/my_db?charset=utf8")
 }
 
 func AddEssay(e Essay) int64 {
@@ -67,10 +76,16 @@ func GetRecommandEssays(limit int64)(ee []Essay, n int64) {
 }
 
 func GetHotEssays()(ee []Essay, n int64) {
-	return GetRecommandEssays(3)
+	return GetRecommandEssays(12)
 }
 
 func AddEssayLikeCount(eid string) {
 	o := orm.NewOrm()
 	o.Raw("UPDATE essay SET phrase_num = phrase_num + 1 WHERE essay_id = " + eid).Exec()
+}
+
+func GetEssaySnapshot() (e []EssaySnapshot){
+	o := orm.NewOrm()
+	o.Raw("SELECT essay_id,user_id,essay_count,type From essay").QueryRows(&e)
+	return
 }

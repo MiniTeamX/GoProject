@@ -106,14 +106,27 @@ paths:
         name: UserId
         description: The user id
         required: true
-        schema:
-          $ref: '#/definitions/.String'
+        type: integer
+        format: int64
       - in: body
         name: EssayId
         description: The essay id
         required: true
+        type: integer
+        format: int64
+  /essay/article_comment_click:
+    post:
+      tags:
+      - essay
+      description: 评论功能
+      operationId: EssayController.Essay comment
+      parameters:
+      - in: body
+        name: body
+        description: The essay id
+        required: true
         schema:
-          $ref: '#/definitions/.body'
+          $ref: '#/definitions/models.Comment'
   /essay/article_information:
     get:
       tags:
@@ -142,12 +155,33 @@ paths:
         name: UserId
         description: The user id
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: query
-        name: EsssayId
+        name: EssayId
         description: The essay id
         required: true
-        type: string
+        type: integer
+        format: int64
+  /essay/comment_like_click:
+    get:
+      tags:
+      - essay
+      description: user like the  comment
+      operationId: EssayController.CommentLike
+      parameters:
+      - in: query
+        name: UserId
+        description: The user id
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: CommentId
+        description: The essay id
+        required: true
+        type: integer
+        format: int64
   /essay/hot_tab:
     get:
       tags:
@@ -174,6 +208,76 @@ paths:
             $ref: '#/definitions/controllers.RecommandContent'
         "403":
           description: '{string} "num == 0"'
+  /essay/upload_article:
+    post:
+      tags:
+      - essay
+      description: post essay
+      operationId: EssayController.upload essay
+      parameters:
+      - in: body
+        name: body
+        description: essay
+        required: true
+        schema:
+          $ref: '#/definitions/models.Essay'
+      responses:
+        "200":
+          description: '{ "eid":eid  }'
+  /essay/upload_picture:
+    post:
+      tags:
+      - essay
+      description: upload essay photo
+      operationId: EssayController.Upload picture
+      parameters:
+      - in: form
+        name: picture_name
+        description: multipart/form-data; filename:picture_name
+        required: true
+        schema:
+          $ref: '#/definitions/.form'
+      responses:
+        "200":
+          description: '{ "result":1 , "message":"avatar url" }'
+        "403":
+          description: '{ "result":0, "message": "upload failed"}'
+  /request/deal_request:
+    post:
+      tags:
+      - request
+      description: 处理请求回调
+      operationId: XwtRequestController.deal  request callback
+      responses:
+        "200":
+          description: '{"result" : 1, "message":"调用成功"}'
+  /request/get_all_request:
+    get:
+      tags:
+      - request
+      description: 得到所有没有处理过的请求
+      operationId: XwtRequestController.get unused request
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/.XwtRequest'
+  /request/post_request:
+    post:
+      tags:
+      - request
+      description: 发送请求
+      operationId: XwtRequestController.post request
+      parameters:
+      - in: body
+        name: body
+        description: body for request contennt
+        required: true
+        schema:
+          $ref: '#/definitions/models.Xwtrequest'
+      responses:
+        "200":
+          description: '{ "result":1 , "message":"register success" }'
   /user/{uid}:
     get:
       tags:
@@ -315,9 +419,7 @@ paths:
 definitions:
   .EssayInformation:
     type: object
-  .String:
-    type: object
-  .body:
+  .XwtRequest:
     type: object
   .form:
     type: object
@@ -355,6 +457,30 @@ definitions:
       UserId:
         type: integer
         format: int64
+  models.Comment:
+    title: Comment
+    type: object
+    properties:
+      CommentId:
+        type: integer
+        format: int64
+      Content:
+        type: string
+      CreateTime:
+        type: string
+        format: datetime
+      EssayId:
+        type: integer
+        format: int64
+      FromId:
+        type: integer
+        format: int64
+      PhraseNum:
+        type: integer
+        format: int64
+      ToId:
+        type: integer
+        format: int64
   models.Commodity:
     title: Commodity
     type: object
@@ -386,6 +512,9 @@ definitions:
       CreateTime:
         type: string
         format: datetime
+      EssayCount:
+        type: integer
+        format: int64
       EssayId:
         type: integer
         format: int64
@@ -405,6 +534,9 @@ definitions:
         type: integer
         format: int64
       UserId:
+        type: integer
+        format: int64
+      WatchNum:
         type: integer
         format: int64
       WxtReward:
@@ -442,5 +574,17 @@ definitions:
         type: integer
         format: int64
       XwtPowerValue:
+        type: integer
+        format: int64
+  models.Xwtrequest:
+    title: Xwtrequest
+    type: object
+    properties:
+      Content:
+        type: string
+      IsUsed:
+        type: integer
+        format: int64
+      RequestId:
         type: integer
         format: int64

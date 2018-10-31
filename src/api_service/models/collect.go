@@ -5,17 +5,19 @@ import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"strconv"
+	"time"
 )
 
 type Collect struct {
 	UserId         int64 `orm:"column(user_id);pk"`
 	EssayId        int64
+	CollectTime    time.Time
 }
 
 func init() {
 	orm.RegisterModel(new(Collect))
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default", "mysql", "root:xcvvcx@/my_db?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "root:root@/my_db?charset=utf8")
 }
 
 func AddCollect(c Collect){

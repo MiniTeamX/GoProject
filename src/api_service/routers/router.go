@@ -22,6 +22,11 @@ func init() {
 				&controllers.CommodityController{},
 			),
 		),
+		beego.NSNamespace("/request",
+			beego.NSInclude(
+				&controllers.XwtRequestController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
