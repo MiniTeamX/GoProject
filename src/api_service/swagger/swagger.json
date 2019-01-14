@@ -609,6 +609,32 @@
                     }
                 }
             },
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "post new user",
+                "operationId": "UserController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{ \"result\":1 , \"message\":\"post success\" }"
+                    },
+                    "403": {
+                        "description": "{ \"result\":0, \"message\": \"fail message\"}"
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "user"

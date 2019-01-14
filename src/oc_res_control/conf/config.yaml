@@ -1,0 +1,25 @@
+server:
+  port: ":8088"
+  mode: "debug"
+  version: "v0.1"
+
+mysql:
+  db:
+    special_data:
+      name: "special_data"
+      host: "127.0.0.1"
+      port: 3306
+      user: "root"
+      passwd: "root"
+      tables:
+        black_url_list: "black_url_list"
+        black_infohash_list: "black_infohash_list"
+        black_emulehash_list: "black_emulehash_list"
+
+logger:
+  level: debug
+  output_paths:
+  - log/server.log
+
+stat:
+  prometheus_http_addr: ":8090"

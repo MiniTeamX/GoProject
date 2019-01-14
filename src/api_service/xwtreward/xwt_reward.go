@@ -4,6 +4,7 @@ import (
 	"api_service/models"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -44,9 +45,9 @@ func CreatEssayReward() {
 		reward := XWT_DAY_CREATE_ESSYA * v.Power / sum
 		u.XwtBalance += reward
 		models.UpdateUser(v.UserId, u)
-		content := "<" + u.NickName + ">" + "create_article_reward" + "<" +
-			        strconv.FormatInt(v.EssayId, 10)+ ">" + "<" + e.Title + ">" +
-		            "<" + strconv.FormatInt(reward, 10) + ">"
+		content := "{" + u.NickName + ":" + "create_article_reward" + ":" +
+			        strconv.FormatInt(v.EssayId, 10)+ ":" + e.Title + ":" +
+		            strconv.FormatInt(reward, 10) + "}"
 		var log models.Xwtlog
 		log.Content = content
 		log.Time = e.CreateTime
@@ -79,9 +80,9 @@ func EssayLikeReward() {
 		user,_ := models.GetUser(essay.UserId)
 		user.XwtBalance += reward
 		models.UpdateUser(user.UserId, user)
-		content := "<" + user.NickName + ">" + "article_liked_reward" + "<" +
-			strconv.FormatInt(k, 10)+ ">" + "<" + essay.Title + ">" +
-			"<" + strconv.FormatInt(reward, 10) + ">"
+		content := "{" + user.NickName + ":" + "article_liked_reward" + ":" +
+			strconv.FormatInt(k, 10)+ ":"  + essay.Title + ":" +
+			strconv.FormatInt(reward, 10) + "}"
 		var log models.Xwtlog
 		log.Content = content
 		log.Time = time.Now()
@@ -90,11 +91,13 @@ func EssayLikeReward() {
 }
 
 func WriteLogToFile() {
+	dir := "./logs/"
 	logs := models.GetLogNotWrited()
-	today := time.Now()
-	fd,_ := os.OpenFile(today.Format("2018-05-09"), os.O_RDWR|os.O_CREATE|os.O_APPEND,0644)
+	today := time.Now().Format("2006-01-02 15:04:05")
+	file_name := dir + strings.Split(today, " ")[0] + ".log"
+	fd,_ := os.OpenFile(file_name, os.O_RDWR|os.O_CREATE|os.O_APPEND,0644)
 	for _,v := range logs {
-		line := v.Content + v.Time.Format("2018-05-11") + "\n"
+		line := v.Content + " " + v.Time.Format("2006-01-02 15:04:05") + "\n"
 		buf := []byte(line)
 		fd.Write(buf)
 	}
@@ -119,5 +122,7 @@ func EssayCountToValue(t int64, wordcount int64) (int64) {
 	}
 	return value
 }
+
+
 
 

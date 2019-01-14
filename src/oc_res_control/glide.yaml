@@ -1,0 +1,5 @@
+package: oc_res_control
+import:
+- package: github.com/gin-gonic/gin
+- package: go.uber.org/zap
+- package: gopkg.in/yaml.v2

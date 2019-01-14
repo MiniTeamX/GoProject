@@ -26,6 +26,12 @@ type CollectArticle struct {
 	EssayPictureUrl string
 }
 
+// @Title Post
+// @Description post new user
+// @Param	body		body 	models.User	true		"body for user content"
+// @Success 200 { "result":1 , "message":"post success" }
+// @Failure 403 { "result":0, "message": "fail message"}
+// @router /:uid [post]
 func (u *UserController) Post() {
 	var user models.User
 	json.Unmarshal(u.Ctx.Input.RequestBody, &user)

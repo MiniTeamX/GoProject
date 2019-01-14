@@ -28,6 +28,6 @@ func Addlog(l Xwtlog){
 
 func GetLogNotWrited() (logs []Xwtlog){
 	o := orm.NewOrm()
-	o.Raw("SELECT * FROM xwtlog WHERE writed = 0").QueryRows(logs)
+	o.Raw("SELECT * FROM xwtlog WHERE writed = 0").QueryRows(&logs)
 	return
 }

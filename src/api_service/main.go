@@ -8,6 +8,8 @@ import (
 
 func main() {
 	xwtreward.CreatEssayReward()
+	xwtreward.EssayLikeReward()
+	xwtreward.WriteLogToFile()
 	beego.SetStaticPath("/avatar", "static/avatar")
 	beego.SetStaticPath("/commodity", "static/commodity")
 	beego.SetStaticPath("/essay", "static/essay")
